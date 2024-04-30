@@ -5,6 +5,8 @@ import Signup from './components/Signup';
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import MainMenu from './components/MainMenu';
 import Admins from './components/Admins';
+import Seller from './components/Seller';
+import AddSeller from './components/AddSeller';
 
 
 
@@ -24,6 +26,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<MainMenu />} />
           <Route path="/admin" element={<Admins />} />
+          <Route path="/seller" element={<Seller />} />
+          <Route path="/add-seller" element={<AddSeller />} />
+
+
 
 
 

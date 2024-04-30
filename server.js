@@ -34,7 +34,7 @@ app.post('/login', async (req, res) => {
                     return res.status(401).json({ error: 'Invalid email or password' });
                 }
 
-                const token = jwt.sign({ userId: row.id, email: row.email, role: row.role }, 'your_secret_key', { expiresIn: '1h' });
+                const token = jwt.sign({ userId: row.id, email: row.email, role: row.role }, 'abcd', { expiresIn: '1h' });
                 res.json({ user: row, token });
             });
         });
@@ -123,6 +123,128 @@ app.post('/hash-password', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+const isAdmin = (req, res, next) => {
+    // Extract token from request headers
+    const token = req.headers.authorization;
+
+    // Check if token is present
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized access' });
+    }
+
+    try {
+        // Verify token and decode payload
+        const decoded = jwt.verify(token, 'abcd');
+        
+        // Check if user is admin
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        
+        // Set user data in request object
+        req.user = decoded;
+
+        // Proceed to the next middleware
+        next();
+    } catch (error) {
+        // Handle invalid or expired token
+        console.error(error);
+        return res.status(401).json({ error: 'Unauthorized access' });
+    }
+};
+
+ 
+
+
+// Add a Seller
+app.post('/add-seller', isAdmin, async (req, res) => {
+    try {
+        // Check if the user is an admin
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Forbidden: Only admins can add sellers' });
+        }
+
+        const { username, email, password } = req.body;
+
+        // Hash the password
+        const hashedPassword = await hashPassword(password);
+
+        // Insert seller with hashed password into the database
+        db.run('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', [username, email, hashedPassword, 'seller'], (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal server error' });
+            } else {
+                res.json({ message: 'Seller added successfully' });
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
+// Get All Sellers
+app.get('/get-all-sellers',  (req, res) => {
+    db.all('SELECT * FROM users WHERE role = ?', ['seller'], (err, sellers) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.json(sellers);
+        }
+    });
+});
+
+
+// Search Sellers by Keyword
+app.post('/sellers/search', (req, res) => {
+    const { keyword } = req.body;
+    db.all('SELECT * FROM users WHERE role = ? AND (username LIKE ? OR email LIKE ?)', ['seller', `%${keyword}%`, `%${keyword}%`], (err, sellers) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.json(sellers);
+        }
+    });
+});
+
+// Delete a Seller
+app.delete('/sellers/delete', isAdmin, (req, res) => {
+    const {sellerId} = req.body;
+    db.run('DELETE FROM users WHERE id = ? AND role = ?', [sellerId, 'seller'], function(err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Seller not found' });
+            } else {
+                res.json({ message: 'Seller deleted successfully' });
+            }
+        }
+    });
+});
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');

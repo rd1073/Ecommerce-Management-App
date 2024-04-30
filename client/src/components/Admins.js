@@ -13,6 +13,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 import Button from 'react-bootstrap/Button';
 import MainMenu from './MainMenu';
+import Navbar from './Navbar';
  
 const Admins = () => {
     const [admins, setAdmins] = useState([]);
@@ -55,6 +56,7 @@ const handleKeyPress = (e) => {
  
   return (
     <div className="container">
+        <Navbar />
      <MainMenu />
     
                 

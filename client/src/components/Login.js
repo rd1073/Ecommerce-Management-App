@@ -16,6 +16,8 @@ const Login = () => {
             .then(response => {
                 console.log(response.data); 
                 console.log("login done");
+                sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+
                 navigate('/dashboard')// Handle successful login
             })
             .catch(error => {

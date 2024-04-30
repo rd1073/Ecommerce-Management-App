@@ -36,7 +36,7 @@ function MainMenu() {
           </a>
         </li>
         <li >
-          <a href="/dice">
+          <a href="/seller">
           <FaDiceSix className="react-icon" style={{ color: 'purple' }}  /> 
             <span className="nav-text">Sellers</span>
           </a>
