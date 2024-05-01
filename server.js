@@ -268,7 +268,7 @@ app.post('/sellers/search', (req, res) => {
 });
 
 // Delete a Seller
-app.delete('/sellers/delete', isAdmin, (req, res) => {
+app.delete('/sellers/delete',  (req, res) => {
     const {sellerId} = req.body;
     db.run('DELETE FROM users WHERE id = ? AND role = ?', [sellerId, 'seller'], function(err) {
         if (err) {

@@ -16,6 +16,8 @@ import Pagination from 'react-bootstrap/Pagination';
 import Button from 'react-bootstrap/Button';
 import MainMenu from './MainMenu';
 import Navbar from './Navbar';
+import { MdDeleteForever } from "react-icons/md";
+
 
 
 
@@ -30,7 +32,7 @@ const Seller = () => {
 
     const navigate = useNavigate();
 
-
+    const token = sessionStorage.getItem('userInfo');
 
 
     useEffect(() => {
@@ -69,19 +71,33 @@ const Seller = () => {
         }
     };
 
-    const deleteSeller = async (id) => {
+    const deleteSeller = async (sellerId) => {
         try {
-            await axios.delete(`http://localhost:3001/sellers/delete`);
-            getAllSellers();
+            //console.log(sellerId)
+            // Send a DELETE request to the backend to delete the seller
+            const response = await axios.delete('http://localhost:3001/sellers/delete', {
+                data: { sellerId }, // Pass sellerId in the request body
+                headers: {
+                    'Authorization': `Bearer ${token}` // Include authorization token if needed
+                }
+            });
+    
+            // Handle response if necessary
+            console.log(response.data);
+            window.location.reload()
         } catch (error) {
             console.error('Error deleting seller:', error);
         }
     };
+    
+    // Call the deleteSeller function with the sellerId when a delete button is clicked
+    
 
     const handleSearchTermChange = (e) => {
-        setSellers(e.target.value); // Update search term state
-      };
-      
+        setKeyword(e.target.value); // Update search term state
+        searchSellers();
+    };
+    
       const handleAddSellerClick = () => {
         navigate('/add-seller');
     };
@@ -122,7 +138,7 @@ const Seller = () => {
           <th>Id</th>
           <th>Username</th>
           <th>Email ID</th>
-          <th>Admin </th>
+          <th>Role </th>
  
         </tr>
       </thead>
@@ -134,6 +150,9 @@ const Seller = () => {
                             <td>{seller.username}</td>
                             <td>{seller.email}</td>
                             <td>{seller.role}</td>
+                            <td><button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
+ </td>
+
  
 
                             {/* Add more table cells as needed */}
