@@ -16,8 +16,9 @@ const Login = () => {
             .then(response => {
                 console.log(response.data); 
                 console.log("login done");
-                sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-
+                if (response.data && response.data.token) {
+                  // Store the JWT token in session storage
+                  sessionStorage.setItem("userInfo", response.data.token);}
                 navigate('/dashboard')// Handle successful login
             })
             .catch(error => {

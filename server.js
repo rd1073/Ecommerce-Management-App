@@ -155,16 +155,69 @@ const isAdmin = (req, res, next) => {
     }
 };
 
+const protect = async (req, res, next) => {
+    // Extract token from the Authorization header
+    const token = req.headers.authorization;
+    //console.log(req.headers)
+  
+    if (!token) {
+      return res.status(401).json({ error: "Authorization header missing" });
+    }
+  
+    try {
+      // Split the authorization header to get the token
+      const tokenParts = token.split(" ");
+      //console.log(tokenParts)
+      if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+        throw new Error("Invalid authorization header format");
+      }
+      const jwtToken = tokenParts[1];
+      //console.log(jwtToken)
+  
+      // Verify the JWT token
+      const decoded = jwt.verify(jwtToken, 'abcd');
+      //console.log(decoded) // Use your actual secret key
+  
+      // Fetch user data from the SQL database based on the decoded token
+     const user = await getUserByIdFromDatabase(decoded.id);
+  
+      if (!user) {
+        return res.status(401).json({ error: "User not found" });
+      }
+  
+      // Set the user object in the request
+      req.user = user;
+  
+      next();
+    } catch (error) {
+      console.error(error);
+      res.status(401).json({ error: "Token is not valid" });
+    }
+  };
+  
+  // Function to fetch user data from the SQL database
+  const getUserByIdFromDatabase = async (userId) => {
+    return new Promise((resolve, reject) => {
+        db.run('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
+  
+
  
 
 
 // Add a Seller
-app.post('/add-seller', isAdmin, async (req, res) => {
+app.post('/add-seller', async (req, res) => {
     try {
-        // Check if the user is an admin
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ error: 'Forbidden: Only admins can add sellers' });
-        }
+        
 
         const { username, email, password } = req.body;
 
@@ -185,7 +238,6 @@ app.post('/add-seller', isAdmin, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 
 
 

@@ -13,24 +13,46 @@ const AddSeller = () => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    
+
+    const addSeller = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/add-seller', {
-                username,
-                email,
-                password
-            });
-            // Reset form after successful submission
-            setUsername('');
-            setEmail('');
-            setPassword('');
-            console.log('Seller added successfully!');
-            navigate('/seller');
+            const token = sessionStorage.getItem('userInfo');
+            console.log('Token from sessionStorage:', token);
+    
+            // Check if token exists before parsing
+            if (token) {
+                //const tokenInfo = JSON.parse(token);
+                //const tokenn = tokenInfo.token;
+                //console.log('Parsed token:', tokenn);
+    
+                // Include the JWT token in the request headers
+                const response = await axios.post('http://localhost:3001/add-seller', {
+                    username,
+                    email,
+                    password
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+    
+                // Reset form after successful submission
+                setUsername('');
+                setEmail('');
+                setPassword('');
+                console.log('Seller added successfully!');
+                navigate('/seller');
+            } else {
+                console.error('Token not found in sessionStorage');
+            }
         } catch (error) {
             console.error('Error adding seller:', error);
         }
     };
+    
+    
 
     return (
         <div className="container">
@@ -38,7 +60,7 @@ const AddSeller = () => {
             <MainMenu />
             <div style={{ textAlign: 'center', marginTop: '100px' }}>
                 <h1>Add Seller</h1>
-                <Form onSubmit={handleSubmit}>
+                <Form >
                     <Form.Group controlId="formBasicUsername">
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter username" />
@@ -54,7 +76,7 @@ const AddSeller = () => {
                         <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" onClick={addSeller}>
                         Submit
                     </Button>
                 </Form>
