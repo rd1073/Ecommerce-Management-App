@@ -1,0 +1,37 @@
+.hero-container {
+    background-image: url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fnicepage.com%2Ffeatures%2Fc%2Fe-commerce&psig=AOvVaw3kYFPePv8bn--SvwGLoV1o&ust=1715180876189000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLCmmuno-4UDFQAAAAAdAAAAABAJ');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.hero-heading {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.hero-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff6600; /* Your preferred button color */
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.hero-btn:hover {
+    background-color: #e65300; /* Darker shade of button color on hover */
+}

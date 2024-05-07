@@ -83,6 +83,37 @@ app.get('/admins', (req, res) => {
     });
 });
 
+
+app.get('/get-all-customers', (req, res) => {
+    db.all('SELECT * FROM users WHERE role = ?', ['customer'], (err, rows) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/get-all-orders', (req, res) => {
+    db.all('SELECT * FROM orders',  (err, rows) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/get-all-products', (req, res) => {
+    db.all('SELECT * FROM products',  (err, rows) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.json(rows);
+    });
+});
+
 app.delete('/users/:id', (req, res) => {
     const userId = req.params.id;
     db.run('DELETE FROM users WHERE id = ?', [userId], function(err) {
