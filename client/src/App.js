@@ -12,6 +12,7 @@ import Customer from './components/Customer';
 import Order from './components/Orders';
 import Product from './components/Products';
 import AddProduct from './components/AddProduct';
+import PlaceOrder from './components/placeOrder';
 
 
 
@@ -37,6 +38,8 @@ function App() {
           <Route path="/customers" element={<Customer />} />
           <Route path="/orders" element={<Order />} />
           <Route path="/products" element={<Product />} />
+          <Route path="/placeorder" element={<PlaceOrder />} />
+
 
 
 

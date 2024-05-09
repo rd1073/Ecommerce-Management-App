@@ -14,8 +14,7 @@ import { GoFileSubmodule } from "react-icons/go";
 import { GiTabletopPlayers } from "react-icons/gi";
 
 import { FaSpinner } from "react-icons/fa";
-import HeroPage from './Hero';
-
+ 
 
 function MainMenu() {
   return (
@@ -55,7 +54,7 @@ function MainMenu() {
           </a>
         </li>
         <li>
-          <a href="#">
+          <a href="/products">
             <IoGiftSharp className="react-icon" style={{ color: 'light-blue' }} />
             <span className="nav-text">Products</span>
           </a>
@@ -71,7 +70,7 @@ function MainMenu() {
 
       </ul>
 
-    </nav><HeroPage /></>
+    </nav></>
   );
 }
 

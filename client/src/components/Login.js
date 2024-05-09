@@ -14,17 +14,24 @@ const Login = () => {
     const handleLogin = () => {
         axios.post('http://localhost:3001/login', { email, password })
             .then(response => {
-                console.log(response.data); 
+                console.log(response); 
                 console.log("login done");
                 if (response.data && response.data.token) {
                   // Store the JWT token in session storage
-                  sessionStorage.setItem("userInfo", response.data.token);}
+                  localStorage.setItem("userInfo", JSON.stringify(response));
+}
                 navigate('/dashboard')// Handle successful login
             })
             .catch(error => {
                 console.error(error.response.data); // Handle login error
             });
     };
+    const handleCreate = () => {
+       
+
+              navigate('/signup')// Handle successful login
+    
+  };
 
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
@@ -113,7 +120,7 @@ const Login = () => {
   <div>
     <button
       type="submit"
-      onClick={handleLogin}
+      onClick={handleCreate}
       style={{
         padding: '10px 40px', // Increased width
         backgroundColor: 'blue', // Blue background color

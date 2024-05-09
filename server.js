@@ -272,6 +272,32 @@ app.post('/add-seller', async (req, res) => {
 
 
 
+
+
+app.post('/add-product', async (req, res) => {
+    try {
+        // Extract product details from request body
+        const { seller_id=11, product_name, price, description } = req.body;
+
+        // Insert product into the products table
+        const sql = 'INSERT INTO products (product_name, price, description) VALUES (?, ?, ?)';
+        const values = [product_name, price, description];
+
+        db.run(sql, values, function (err) {
+            if (err) {
+                console.error('Error adding product:', err);
+                res.status(500).json({ error: 'Internal server error' });
+            } else {
+                console.log(`Product added with ID: ${this.lastID}`);
+                res.json({ message: 'Product added successfully', product_id: this.lastID });
+            }
+        });
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get All Sellers
 app.get('/get-all-sellers',  (req, res) => {
     db.all('SELECT * FROM users WHERE role = ?', ['seller'], (err, sellers) => {
@@ -302,6 +328,22 @@ app.post('/sellers/search', (req, res) => {
 app.delete('/sellers/delete',  (req, res) => {
     const {sellerId} = req.body;
     db.run('DELETE FROM users WHERE id = ? AND role = ?', [sellerId, 'seller'], function(err) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Seller not found' });
+            } else {
+                res.json({ message: 'Seller deleted successfully' });
+            }
+        }
+    });
+});
+
+app.delete('/customers/delete',  (req, res) => {
+    const {cId} = req.body;
+    db.run('DELETE FROM users WHERE id = ? AND role = ?', [cId, 'customer'], function(err) {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal server error' });

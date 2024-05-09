@@ -33,7 +33,21 @@ const Customer = () => {
     const navigate = useNavigate();
 
     const token = sessionStorage.getItem('userInfo');
+    const [userInfo, setUserInfo] = useState(null);
 
+    
+    useEffect(() => {
+        const storedUserInfo = localStorage.getItem('userInfo');
+        if (storedUserInfo) {
+            // Parse JSON string to object
+            const parsedUserInfo = JSON.parse(storedUserInfo);
+            setUserInfo(parsedUserInfo);
+        }
+    }, []); // Empty dependency array ensures the effect runs only once on mount
+    
+    useEffect(() => {
+        console.log(userInfo);
+    }, [userInfo]);
 
     useEffect(() => {
         getAllSellers();
@@ -71,11 +85,11 @@ const Customer = () => {
         }
     };
 
-    const deleteSeller = async (sellerId) => {
+    const deleteCustomer = async (sellerId) => {
         try {
             //console.log(sellerId)
             // Send a DELETE request to the backend to delete the seller
-            const response = await axios.delete('http://localhost:3001/sellers/delete', {
+            const response = await axios.delete('http://localhost:3001/customers/delete', {
                 data: { sellerId }, // Pass sellerId in the request body
                 headers: {
                     'Authorization': `Bearer ${token}` // Include authorization token if needed
@@ -150,8 +164,7 @@ const Customer = () => {
                             <td>{seller.username}</td>
                             <td>{seller.email}</td>
                             <td>{seller.role}</td>
-                            <td><button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
- </td>
+                             
 
  
 

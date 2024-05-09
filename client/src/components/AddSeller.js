@@ -18,25 +18,13 @@ const AddSeller = () => {
     const addSeller = async (e) => {
         e.preventDefault();
         try {
-            const token = sessionStorage.getItem('userInfo');
-            console.log('Token from sessionStorage:', token);
-    
-            // Check if token exists before parsing
-            if (token) {
-                //const tokenInfo = JSON.parse(token);
-                //const tokenn = tokenInfo.token;
-                //console.log('Parsed token:', tokenn);
-    
+            // Check if the token exists in sessionStorage
+            
                 // Include the JWT token in the request headers
-                const response = await axios.post('http://localhost:3001/add-seller', {
-                    username,
-                    email,
-                    password
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await axios.post(
+                    'http://localhost:3001/add-seller', 
+                    { username, email, password }
+                );
     
                 // Reset form after successful submission
                 setUsername('');
@@ -44,9 +32,7 @@ const AddSeller = () => {
                 setPassword('');
                 console.log('Seller added successfully!');
                 navigate('/seller');
-            } else {
-                console.error('Token not found in sessionStorage');
-            }
+            
         } catch (error) {
             console.error('Error adding seller:', error);
         }

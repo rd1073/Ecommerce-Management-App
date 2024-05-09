@@ -2,16 +2,38 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Navbar from './Navbar';
 import MainMenu from './MainMenu';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Assuming you're using React Router for navigation
 
 const AddProduct = () => {
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
+    const navigate = useNavigate();
 
-    const addProduct = () => {
-        // Add logic to handle adding product
-        console.log('Adding product...');
+    const addProduct = async (e) => {
+        e.preventDefault();
+        try {
+            // Check if the token exists in sessionStorage
+            
+                // Include the JWT token in the request headers
+                const response = await axios.post(
+                    'http://localhost:3001/add-product', 
+                    { productName, price, description }
+                );
+    
+                // Reset form after successful submission
+                setDescription('');
+                setPrice('');
+                setProductName('');
+                console.log('Seller added successfully!');
+                navigate('/products');
+            
+        } catch (error) {
+            console.error('Error adding seller:', error);
+        }
     };
+    
 
     return (
         <div className="container">

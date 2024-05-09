@@ -22,6 +22,7 @@ import { MdDeleteForever } from "react-icons/md";
 
 
 const Seller = () => {
+ 
     const [sellers, setSellers] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [newSeller, setNewSeller] = useState({
@@ -29,6 +30,22 @@ const Seller = () => {
         email: '',
         password: ''
     });
+
+    const [userInfo, setUserInfo] = useState(null);
+
+    
+    useEffect(() => {
+        const storedUserInfo = localStorage.getItem('userInfo');
+        if (storedUserInfo) {
+            // Parse JSON string to object
+            const parsedUserInfo = JSON.parse(storedUserInfo);
+            setUserInfo(parsedUserInfo);
+        }
+    }, []); // Empty dependency array ensures the effect runs only once on mount
+    
+    useEffect(() => {
+        console.log(userInfo);
+    }, [userInfo]);
 
     const navigate = useNavigate();
 
@@ -150,7 +167,11 @@ const Seller = () => {
                             <td>{seller.username}</td>
                             <td>{seller.email}</td>
                             <td>{seller.role}</td>
-                            <td><button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
+                            <td>
+                            {userInfo && userInfo.data.user.role === 'admin' && (
+                <button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
+            )}
+            
  </td>
 
  
@@ -167,8 +188,12 @@ const Seller = () => {
      
       
     </div>
-    <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
-            <Button variant="primary" onClick={handleAddSellerClick}>Add Seller</Button>
+    <div>
+            {userInfo && userInfo.data.user.role === 'admin' && (
+                <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
+                    <Button variant="primary" onClick={handleAddSellerClick}>Add Seller</Button>
+                </div>
+            )}
         </div>
 
       

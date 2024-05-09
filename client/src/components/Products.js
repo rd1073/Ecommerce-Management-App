@@ -31,6 +31,21 @@ const Product = () => {
     });
 
     const navigate = useNavigate();
+    const [userInfo, setUserInfo] = useState(null);
+
+    
+    useEffect(() => {
+        const storedUserInfo = localStorage.getItem('userInfo');
+        if (storedUserInfo) {
+            // Parse JSON string to object
+            const parsedUserInfo = JSON.parse(storedUserInfo);
+            setUserInfo(parsedUserInfo);
+        }
+    }, []); // Empty dependency array ensures the effect runs only once on mount
+    
+    useEffect(() => {
+        console.log(userInfo);
+    }, [userInfo]);
 
     const token = sessionStorage.getItem('userInfo');
 
@@ -59,7 +74,7 @@ const Product = () => {
 
     const addSeller = async () => {
         try {
-            await axios.post('http://localhost:3001/add-sellers', newSeller);
+            await axios.post('http://localhost:3001/add-product', newSeller);
             setNewSeller({
                 username: '',
                 email: '',
@@ -99,7 +114,7 @@ const Product = () => {
     };
     
       const handleAddSellerClick = () => {
-        navigate('/add-seller');
+        navigate('/add-product');
     };
 
   return (
@@ -151,7 +166,9 @@ const Product = () => {
                             <td>{seller.product_name}</td>
                             <td>{seller.price}</td>
                             <td>{seller.description}</td>
-                             <td><button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
+                             <td>{userInfo && userInfo.data.user.role === 'admin' && (
+                <button onClick={() => deleteSeller(seller.id)}> <MdDeleteForever /></button>
+            )}
  </td>
 
  
@@ -168,7 +185,14 @@ const Product = () => {
      
       
     </div>
-     
+    <div>
+            {userInfo && userInfo.data.user.role === 'seller' && (
+                <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
+                    <Button variant="primary" onClick={handleAddSellerClick}>Add Product</Button>
+                </div>
+            )}
+        </div>
+
 
       
 </div>
